@@ -1,1 +1,1 @@
-from .rest import RestClient
+from .rest import RestAsyncClient

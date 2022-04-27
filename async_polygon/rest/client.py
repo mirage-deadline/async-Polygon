@@ -1,10 +1,9 @@
 from typing import Union
 from aiohttp import ClientResponse, ClientSession
 from async_polygon.rest.dataclasses import pretty_json
-import pandas as pd
 
 
-class RestClient:
+class RestAsyncClient:
 
     POLY_BASIC: str = 'api.polygon.io'
 
@@ -66,7 +65,8 @@ class RestClient:
     """
 
         url_for_req = f'{self.url}/v2/aggs/ticker/{ticker}/range/{multiplier}/{timespan}/{_from}/{_to}?adjusted={adjusted}&sort={sort}&limit={limit}&apiKey={self.auth_key}'
-        return await self._handle_request('AggregateBars', url_for_req)
+        aggregated = await self._handle_request('AggregateBars', url_for_req)
+        return aggregated
 
     async def previous_close(self, ticker: str, adjusted: bool = True):
         """Get the previous day's open, high, low, and close (OHLC) for the specified stock ticker.
@@ -82,10 +82,10 @@ class RestClient:
             _type_: _description_
         """
 
-        url_for_req = f'{self.url}/v2/aggs/ticker/{ticker}/prev'
+        url_for_req = f'{self.url}/v2/aggs/ticker/{ticker}/prev?adjusted={adjusted}&apikey={self.auth_key}'
         return await self._handle_request('PreviousClose', url_for_req)
 
-    async def last_trade(self, ticker: str) -> pd.DataFrame:
+    async def last_trade(self, ticker: str) -> dict:
         """Get the most recent trade for a given stock.
 
         Args:
@@ -93,7 +93,7 @@ class RestClient:
             ticker (str)
         """
 
-        url_for_req = f'{self.url}/v2/last/trade/{ticker}'
+        url_for_req = f'{self.url}/v2/last/trade/{ticker}?apiKey={self.auth_key}'
         return await self._handle_request('LastTrade', url_for_req)
     
     async def crypt_previous_close(self, ticker: str, adjusted: bool = True):
@@ -101,10 +101,11 @@ class RestClient:
 
         Args:
         -----
-            ticker (str): Input following format BTCUSD, crypto with currency without separates
+            ticker (str): Input following format BTCUSD or BTC-USD, crypto with currency without separates
             adjusted (bool, optional): Whether or not the results are adjusted for splits. 
                 By default, results are adjusted. Set this to false to get results that are NOT adjusted for splits.. Defaults to True.
         """
-        
-        url_for_req = f'{self.url}/v2/aggs/ticker/X:{ticker}/prev'
+        if '-' in ticker:
+            ticker = ticker.replace('-', '')
+        url_for_req = f'{self.url}/v2/aggs/ticker/X:{ticker}/prev?adjusted={adjusted}&apiKey={self.auth_key}'
         return await self._handle_request('PreviousClose', url_for_req)

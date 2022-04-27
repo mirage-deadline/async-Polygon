@@ -13,5 +13,5 @@ def to_pretty_json(_responseName: str, resp_json: dict) -> dict:
     """
 
     result = dataclasses.name_to_method[_responseName]()
-    result.make_pretty_json(resp_json)
+    result = result.make_pretty_json(resp_json)
     return result
