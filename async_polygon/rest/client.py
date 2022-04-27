@@ -1,5 +1,6 @@
 from typing import Union
 from aiohttp import ClientResponse, ClientSession
+import pandas as pd
 from async_polygon.rest.dataclasses import pretty_json
 
 
@@ -32,7 +33,7 @@ class RestAsyncClient:
 
     async def aggregate_bars(
         self, ticker: str, multiplier: int, timespan: str, 
-        _from: str, _to: str, adjusted: bool = True, sort: str = 'asc', limit: int = 50000):
+        _from: str, _to: str, adjusted: bool = True, sort: str = 'asc', limit: int = 50000) -> pd.DataFrame:
         """
     Get aggregate bars for a stock
     
@@ -68,7 +69,7 @@ class RestAsyncClient:
         aggregated = await self._handle_request('AggregateBars', url_for_req)
         return aggregated
 
-    async def previous_close(self, ticker: str, adjusted: bool = True):
+    async def previous_close(self, ticker: str, adjusted: bool = True) -> pd.DataFrame:
         """Get the previous day's open, high, low, and close (OHLC) for the specified stock ticker.
 
         Args:
@@ -85,7 +86,7 @@ class RestAsyncClient:
         url_for_req = f'{self.url}/v2/aggs/ticker/{ticker}/prev?adjusted={adjusted}&apikey={self.auth_key}'
         return await self._handle_request('PreviousClose', url_for_req)
 
-    async def last_trade(self, ticker: str) -> dict:
+    async def last_trade(self, ticker: str) -> pd.DataFrame:
         """Get the most recent trade for a given stock.
 
         Args:
@@ -96,7 +97,7 @@ class RestAsyncClient:
         url_for_req = f'{self.url}/v2/last/trade/{ticker}?apiKey={self.auth_key}'
         return await self._handle_request('LastTrade', url_for_req)
     
-    async def crypt_previous_close(self, ticker: str, adjusted: bool = True):
+    async def crypt_previous_close(self, ticker: str, adjusted: bool = True) -> pd.DataFrame:
         """Get the previous day's open, high, low, and close (OHLC) for the specified cryptocurrency pair.
 
         Args:
