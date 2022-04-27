@@ -1,10 +1,3 @@
-# async-polygon
-This is an unofficial asynchronous version of [Official Polygon Api(REST API)](https://github.com/polygon-io/client-python)
----
-# **Getting Started**
-
-## Client example
-```
 import asyncio
 from async_polygon import RestAsyncClient
 
@@ -23,6 +16,3 @@ async def main():
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main())
-```
-
-In near future I'll expand the functionality of the library
