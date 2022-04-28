@@ -1,4 +1,4 @@
-from async_polygon.rest import dataclasses
+from async_polygon.rest.dataclasses import name_to_method
 
 
 def to_pretty_json(_responseName: str, resp_json: dict) -> dict:
@@ -12,6 +12,6 @@ def to_pretty_json(_responseName: str, resp_json: dict) -> dict:
         json: pretty json obj
     """
 
-    result = dataclasses.name_to_method[_responseName]()
+    result = name_to_method[_responseName]()
     result = result.make_pretty_json(resp_json)
     return result
